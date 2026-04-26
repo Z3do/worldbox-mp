@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WorldBox Multiplayer — Documentation</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:         #0a0806;
+    --bg2:        #110e0a;
+    --bg3:        #1a1510;
+    --border:     #3a2e1e;
+    --gold:       #c9a84c;
+    --gold2:      #e8c97a;
+    --gold3:      #f5dfa0;
+    --red:        #c0392b;
+    --green:      #27ae60;
+    --blue:       #2980b9;
+    --purple:     #8e44ad;
+    --text:       #d4c5a9;
+    --text2:      #8a7a5e;
+    --text3:      #5a4e3a;
+    --glow:       rgba(201,168,76,0.15);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Crimson Pro', serif;
+    font-size: 18px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── Particules de fond ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 10%, rgba(201,168,76,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(139,69,19,0.06) 0%, transparent 50%),
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(201,168,76,0.01) 2px,
+        rgba(201,168,76,0.01) 4px
+      );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── Navigation ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(10,8,6,0.92);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(12px);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+  }
+
+  .nav-logo {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1rem;
+    color: var(--gold);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--text2);
+    text-decoration: none;
+    font-size: 0.9rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--gold); }
+
+  /* ── Hero ── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 6rem 2rem 4rem;
+    overflow: hidden;
+  }
+
+  .hero-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+  }
+
+  .hero-orb-1 {
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(201,168,76,0.08), transparent 70%);
+    top: -100px; left: -100px;
+    animation: drift1 12s ease-in-out infinite;
+  }
+
+  .hero-orb-2 {
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(139,69,19,0.1), transparent 70%);
+    bottom: 0; right: -50px;
+    animation: drift2 15s ease-in-out infinite;
+  }
+
+  @keyframes drift1 {
+    0%,100% { transform: translate(0,0); }
+    50% { transform: translate(40px,30px); }
+  }
+
+  @keyframes drift2 {
+    0%,100% { transform: translate(0,0); }
+    50% { transform: translate(-30px,-20px); }
+  }
+
+  .hero-badge {
+    display: inline-block;
+    padding: 0.3rem 1rem;
+    border: 1px solid var(--gold);
+    border-radius: 2px;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 2rem;
+    animation: fadeDown 0.8s ease both;
+  }
+
+  .hero h1 {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(2.5rem, 7vw, 5.5rem);
+    font-weight: 900;
+    line-height: 1.1;
+    color: var(--gold3);
+    text-shadow:
+      0 0 40px rgba(201,168,76,0.3),
+      0 0 80px rgba(201,168,76,0.15);
+    animation: fadeDown 0.8s 0.1s ease both;
+    margin-bottom: 0.5rem;
+  }
+
+  .hero h1 span {
+    color: var(--gold);
+    display: block;
+  }
+
+  .hero-sub {
+    font-size: 1.2rem;
+    color: var(--text2);
+    font-style: italic;
+    margin: 1.5rem 0 3rem;
+    animation: fadeDown 0.8s 0.2s ease both;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 3rem;
+    animation: fadeDown 0.8s 0.3s ease both;
+  }
+
+  .hero-stat {
+    text-align: center;
+  }
+
+  .hero-stat-num {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 2.2rem;
+    color: var(--gold);
+    display: block;
+    line-height: 1;
+  }
+
+  .hero-stat-label {
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text3);
+  }
+
+  .hero-divider {
+    width: 1px;
+    height: 60px;
+    background: var(--border);
+    align-self: center;
+  }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text3);
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    animation: bounce 2s ease-in-out infinite;
+  }
+
+  .hero-scroll::after {
+    content: '';
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+  }
+
+  @keyframes bounce {
+    0%,100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(8px); }
+  }
+
+  /* ── Sections ── */
+  section {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 5rem 2rem;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+
+  .section-tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border-bottom: 1px solid var(--gold);
+    padding-bottom: 0.2rem;
+    margin-bottom: 1rem;
+  }
+
+  .section-header h2 {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    color: var(--gold3);
+    margin-bottom: 0.5rem;
+  }
+
+  .section-header p {
+    color: var(--text2);
+    font-style: italic;
+    font-size: 1.1rem;
+  }
+
+  /* ── Séparateur ── */
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--border), transparent);
+    margin: 0 auto;
+  }
+
+  /* ── Commandes ── */
+  .commands-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .cmd-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.8rem;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.2s;
+    cursor: default;
+  }
+
+  .cmd-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(to right, transparent, var(--card-accent, var(--gold)), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .cmd-card:hover {
+    border-color: var(--card-accent, var(--gold));
+    transform: translateY(-2px);
+  }
+
+  .cmd-card:hover::before { opacity: 1; }
+
+  .cmd-card.war   { --card-accent: var(--red); }
+  .cmd-card.peace { --card-accent: var(--blue); }
+  .cmd-card.ally  { --card-accent: var(--green); }
+  .cmd-card.gold  { --card-accent: var(--gold); }
+  .cmd-card.info  { --card-accent: var(--purple); }
+
+  .cmd-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+  }
+
+  .cmd-icon {
+    font-size: 1.6rem;
+    line-height: 1;
+  }
+
+  .cmd-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.1rem;
+    color: var(--gold2);
+    font-weight: 600;
+  }
+
+  .cmd-name span {
+    color: var(--text2);
+    font-weight: 400;
+    font-size: 0.9rem;
+  }
+
+  .cmd-desc {
+    color: var(--text2);
+    font-size: 0.95rem;
+    margin-bottom: 1.2rem;
+    line-height: 1.6;
+  }
+
+  .cmd-steps {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .cmd-steps li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    font-size: 0.88rem;
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  .step-num {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    background: var(--card-accent, var(--gold));
+    color: var(--bg);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    margin-top: 2px;
+  }
+
+  .cmd-tag {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 2px;
+    font-size: 0.7rem;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.05em;
+    margin-top: 1rem;
+  }
+
+  .tag-ephemeral { background: rgba(39,174,96,0.15); color: #27ae60; border: 1px solid rgba(39,174,96,0.3); }
+  .tag-public    { background: rgba(201,168,76,0.15); color: var(--gold); border: 1px solid rgba(201,168,76,0.3); }
+  .tag-secret    { background: rgba(142,68,173,0.15); color: #8e44ad; border: 1px solid rgba(142,68,173,0.3); }
+
+  /* ── Races ── */
+  .races-tabs {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
+  }
+
+  .races-tab {
+    padding: 0.5rem 1.5rem;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text2);
+    font-family: 'Crimson Pro', serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+
+  .races-tab.active,
+  .races-tab:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(201,168,76,0.06);
+  }
+
+  .races-panel { display: none; }
+  .races-panel.active { display: block; }
+
+  .race-search {
+    width: 100%;
+    max-width: 400px;
+    display: block;
+    margin: 0 auto 2rem;
+    padding: 0.7rem 1.2rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    color: var(--text);
+    font-family: 'Crimson Pro', serif;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .race-search:focus { border-color: var(--gold); }
+  .race-search::placeholder { color: var(--text3); }
+
+  .races-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.8rem;
+  }
+
+  .race-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.9rem 0.7rem;
+    text-align: center;
+    transition: all 0.2s;
+    cursor: default;
+  }
+
+  .race-card:hover {
+    border-color: var(--gold);
+    background: var(--bg3);
+    transform: translateY(-2px);
+  }
+
+  .race-emoji { font-size: 1.8rem; display: block; margin-bottom: 0.4rem; line-height: 1; }
+
+  .race-name {
+    font-size: 0.82rem;
+    color: var(--text);
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+
+  .race-id {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text3);
+  }
+
+  /* ── Setup ── */
+  .setup-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    counter-reset: setup;
+  }
+
+  .setup-step {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.8rem;
+    position: relative;
+    counter-increment: setup;
+  }
+
+  .setup-step::before {
+    content: counter(setup, decimal-leading-zero);
+    position: absolute;
+    top: 1.2rem; right: 1.5rem;
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 2.5rem;
+    color: var(--text3);
+    line-height: 1;
+  }
+
+  .setup-step h3 {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1rem;
+    color: var(--gold2);
+    margin-bottom: 0.8rem;
+  }
+
+  .setup-step p, .setup-step li {
+    font-size: 0.92rem;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  .setup-step ul { list-style: none; }
+
+  .setup-step ul li::before {
+    content: '→ ';
+    color: var(--gold);
+  }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82em;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 0.15em 0.4em;
+    border-radius: 2px;
+    color: var(--gold2);
+  }
+
+  pre {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.2rem 1.5rem;
+    overflow-x: auto;
+    margin: 1rem 0;
+  }
+
+  pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 0.85rem;
+    color: var(--text);
+  }
+
+  /* ── Secret system ── */
+  .secret-flow {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 2rem 0;
+  }
+
+  .flow-box {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1rem 1.5rem;
+    text-align: center;
+    min-width: 160px;
+  }
+
+  .flow-box-icon { font-size: 1.5rem; display: block; margin-bottom: 0.3rem; }
+  .flow-box-label { font-size: 0.82rem; color: var(--text2); }
+  .flow-box-sub { font-size: 0.72rem; color: var(--text3); font-style: italic; }
+
+  .flow-arrow {
+    color: var(--gold);
+    font-size: 1.4rem;
+    opacity: 0.6;
+  }
+
+  /* ── Footer ── */
+  footer {
+    border-top: 1px solid var(--border);
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--text3);
+    font-size: 0.85rem;
+  }
+
+  footer span { color: var(--gold); }
+
+  /* ── Animations ── */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .hero-stats { gap: 1.5rem; flex-wrap: wrap; justify-content: center; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav>
+  <a class="nav-logo" href="#">⚔ WorldBox MP</a>
+  <ul class="nav-links">
+    <li><a href="#commandes">Commandes</a></li>
+    <li><a href="#races">Races</a></li>
+    <li><a href="#secret">Système Secret</a></li>
+  </ul>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+
+  <div class="hero-badge">🌍 Mod Discord Multijoueur</div>
+
+  <h1>
+    WorldBox
+    <span>Multiplayer</span>
+  </h1>
+
+  <p class="hero-sub">Transforme ton monde en arène de diplomatie, de trahison et de conquête</p>
+
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <span class="hero-stat-num">113</span>
+      <span class="hero-stat-label">Races jouables</span>
+    </div>
+    <div class="hero-divider"></div>
+    <div class="hero-stat">
+      <span class="hero-stat-num">8</span>
+      <span class="hero-stat-label">Commandes Discord</span>
+    </div>
+    <div class="hero-divider"></div>
+    <div class="hero-stat">
+      <span class="hero-stat-num">100%</span>
+      <span class="hero-stat-label">Interactions secrètes</span>
+    </div>
+  </div>
+
+  <div class="hero-scroll">Découvrir</div>
+</div>
+
+<div class="divider"></div>
+
+<!-- Commandes -->
+<section id="commandes">
+  <div class="section-header fade-in">
+    <div class="section-tag">Discord</div>
+    <h2>Commandes</h2>
+    <p>Toutes les commandes disponibles et comment les utiliser</p>
+  </div>
+
+  <div class="commands-grid fade-in">
+
+    <!-- /race -->
+    <div class="cmd-card info">
+      <div class="cmd-header">
+        <span class="cmd-icon">🏳️</span>
+        <div>
+          <div class="cmd-name">/race <span>[race]</span></div>
+        </div>
+      </div>
+      <p class="cmd-desc">Choisir ta race de jeu. Tous les royaumes de cette race deviennent les tiens. Impossible de rechanger pendant la partie.</p>
+      <ul class="cmd-steps">
+        <li><span class="step-num">1</span>Tape <code>/race</code> et choisis dans la liste avec autocomplete</li>
+        <li><span class="step-num">2</span>Tous les royaumes de cette race te sont attribués en jeu</li>
+        <li><span class="step-num">3</span>Bloqué jusqu'au prochain <code>/reset</code></li>
+      </ul>
+      <span class="cmd-tag tag-ephemeral">Éphémère</span>
+    </div>
+
+    <!-- /guerre -->
+    <div class="cmd-card war">
+      <div class="cmd-header">
+        <span class="cmd-icon">⚔️</span>
+        <div>
+          <div class="cmd-name">/guerre <span>declarer | forcer</span></div>
+        </div>
+      </div>
+      <p class="cmd-desc">Déclarer la guerre à un joueur. Avec <code>declarer</code>, la cible a 25s pour ouvrir l'interaction puis 30s pour négocier. Avec <code>forcer</code>, la guerre est immédiate.</p>
+      <ul class="cmd-steps">
+        <li><span class="step-num">1</span>Annonce publique dans #game + bouton discret pour la cible</li>
+        <li><span class="step-num">2</span>La cible ouvre l'interaction → éphémère avec options de négo</li>
+        <li><span class="step-num">3</span>Offrir or, contre-offre, diplomatie ou accepter la guerre</li>
+        <li><span class="step-num">4</span>Résultat annoncé publiquement avec ping des deux joueurs</li>
+      </ul>
+      <span class="cmd-tag tag-secret">Secret</span>
+      <span class="cmd-tag tag-public">Annonce publique</span>
+    </div>
+
+    <!-- /paix -->
+    <div class="cmd-card peace">
+      <div class="cmd-header">
+        <span class="cmd-icon">🕊️</span>
+        <div>
+          <div class="cmd-name">/paix <span>[joueur]</span></div>
+        </div>
+      </div>
+      <p class="cmd-desc">Proposer la paix à un joueur avec qui tu es en guerre. Trois types : paix simple, contre de l'or, ou accord diplomatique.</p>
+      <ul class="cmd-steps">
+        <li><span class="step-num">1</span>Choisis le type de proposition (éphémère)</li>
+        <li><span class="step-num">2</span>Bouton discret dans #game pour la cible (25s)</li>
+        <li><span class="step-num">3</span>La cible ouvre → Accepter ou Refuser en éphémère</li>
+        <li><span class="step-num">4</span>Si accepté → annonce publique avec ping des deux</li>
+      </ul>
+      <span class="cmd-tag tag-secret">Secret</span>
+      <span class="cmd-tag tag-ephemeral">Éphémère</span>
+    </div>
+
+    <!-- /alliance -->
+    <div class="cmd-card ally">
+      <div class="cmd-header">
+        <span class="cmd-icon">🤝</span>
+        <div>
+          <div class="cmd-name">/alliance <span>inviter | quitter | dissoudre | nom</span></div>
+        </div>
+      </div>
+      <p class="cmd-desc">Gérer les alliances. Un canal privé numéroté est créé à l'acceptation. Seul le chef peut dissoudre ou renommer.</p>
+      <ul class="cmd-steps">
+        <li><span class="step-num">1</span><code>inviter</code> → bouton discret pour la cible (25s)</li>
+        <li><span class="step-num">2</span>Accepter → canal <code>alliance-001</code> créé automatiquement</li>
+        <li><span class="step-num">3</span><code>quitter</code> / <code>dissoudre</code> → confirmation + message dans le canal</li>
+        <li><span class="step-num">4</span>Si dernier membre seul → accès retiré automatiquement</li>
+      </ul>
+      <span class="cmd-tag tag-secret">Canal privé</span>
+      <span class="cmd-tag tag-ephemeral">Éphémère</span>
+    </div>
+
+    <!-- /or -->
+    <div class="cmd-card gold">
+      <div class="cmd-header">
+        <span class="cmd-icon">💰</span>
+        <div>
+          <div class="cmd-name">/or <span>[joueur] [montant]</span></div>
+        </div>
+      </div>
+      <p class="cmd-desc">Donner de l'or à un joueur. Vérifie ton or en temps réel via le mod C#. Impossible d'envoyer plus que tu n'en as.</p>
+      <ul class="cmd-steps">
+        <li><span class="step-num">1</span>Le bot vérifie ton or actuel en jeu</li>
+        <li><span class="step-num">2</span>Si assez → or transféré + notification discrète 30s pour le receveur</li>
+        <li><span class="step-num">3</span>Le receveur ouvre → éphémère révèle le montant et l'envoyeur</li>
+      </ul>
+      <span class="cmd-tag tag-secret">Secret</span>
+      <span class="cmd-tag tag-ephemeral">Éphémère</span>
+    </div>
+
+    <!-- /orinfo -->
+    <div class="cmd-card gold">
+      <div class="cmd-header">
+        <span class="cmd-icon">📊</span>
+        <div>
+          <div class="cmd-name">/orinfo</div>
+        </div>
+      </div>
+      <p class="cmd-desc">Voir ton or actuel, ta race et ton nombre d'unités en temps réel. Données lues directement depuis WorldBox via le mod C#.</p>
+      <ul class="cmd-steps">
+        <li><span class="step-num">1</span>Tape <code>/orinfo</code></li>
+        <li><span class="step-num">2</span>Reçois un éphémère avec tes stats en direct</li>
+      </ul>
+      <span class="cmd-tag tag-ephemeral">Éphémère</span>
+    </div>
+
+    <!-- /statut -->
+    <div class="cmd-card info">
+      <div class="cmd-header">
+        <span class="cmd-icon">🗺️</span>
+        <div>
+          <div class="cmd-name">/statut</div>
+        </div>
+      </div>
+      <p class="cmd-desc">Affiche tous les joueurs enregistrés, leurs races, les guerres en cours, les alliances actives et les propositions en attente.</p>
+      <ul class="cmd-steps">
+        <li><span class="step-num">1</span>Tape <code>/statut</code></li>
+        <li><span class="step-num">2</span>Vue globale de la partie en temps réel</li>
+      </ul>
+      <span class="cmd-tag tag-public">Public</span>
+    </div>
+
+    <!-- /reset -->
+    <div class="cmd-card war">
+      <div class="cmd-header">
+        <span class="cmd-icon">🔄</span>
+        <div>
+          <div class="cmd-name">/reset</div>
+        </div>
+      </div>
+      <p class="cmd-desc">Réinitialise la partie. Supprime les canaux d'alliance, efface toutes les données et affiche les statistiques de la partie.</p>
+      <ul class="cmd-steps">
+        <li><span class="step-num">1</span>Tous les canaux alliance sont supprimés</li>
+        <li><span class="step-num">2</span>Stats affichées : alliances, guerres, or échangé, diplomaties…</li>
+        <li><span class="step-num">3</span>Canal vidé → message "Nouvelle partie lancée !"</li>
+      </ul>
+      <span class="cmd-tag tag-public">Public</span>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Système Secret -->
+<section id="secret">
+  <div class="section-header fade-in">
+    <div class="section-tag">Confidentialité</div>
+    <h2>Système Secret</h2>
+    <p>Comment les interactions restent invisibles pour les autres joueurs</p>
+  </div>
+
+  <div class="fade-in">
+    <p style="text-align:center; color:var(--text2); font-style:italic; margin-bottom:2rem;">
+      Personne ne sait si tu déclares une guerre, proposes une alliance ou envoies de l'or.<br>
+      Seul le résultat final est annoncé publiquement.
+    </p>
+
+    <div class="secret-flow">
+      <div class="flow-box">
+        <span class="flow-box-icon">🎮</span>
+        <div class="flow-box-label">Joueur A</div>
+        <div class="flow-box-sub">tape /guerre declarer B</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box">
+        <span class="flow-box-icon">📨</span>
+        <div class="flow-box-label">#game public</div>
+        <div class="flow-box-sub">"@B — interaction en attente"</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box">
+        <span class="flow-box-icon">🔒</span>
+        <div class="flow-box-label">Joueur B ouvre</div>
+        <div class="flow-box-sub">éphémère privé avec options</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box">
+        <span class="flow-box-icon">⚔️</span>
+        <div class="flow-box-label">Résultat public</div>
+        <div class="flow-box-sub">annonce seulement si guerre</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,minmax(0,320px));gap:1.5rem;margin-top:2.5rem;justify-content:center;max-width:1020px;margin-left:auto;margin-right:auto;">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.8rem;text-align:center;">
+        <div style="font-size:2rem;margin-bottom:0.8rem">👁️‍🗨️</div>
+        <h3 style="font-family:'Cinzel Decorative',serif;font-size:0.85rem;color:var(--gold2);margin-bottom:0.8rem;letter-spacing:0.03em">Ce que les autres voient</h3>
+        <p style="font-size:0.88rem;color:var(--text2);line-height:1.6">"@Zedo — tu as une interaction en attente" + bouton Ouvrir. Rien d'autre.</p>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.8rem;text-align:center;">
+        <div style="font-size:2rem;margin-bottom:0.8rem">🔐</div>
+        <h3 style="font-family:'Cinzel Decorative',serif;font-size:0.85rem;color:var(--gold2);margin-bottom:0.8rem;letter-spacing:0.03em">Ce que tu vois seul</h3>
+        <p style="font-size:0.88rem;color:var(--text2);line-height:1.6">Le type d'interaction, le joueur concerné, le montant d'or, la proposition diplomatique.</p>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.8rem;text-align:center;">
+        <div style="font-size:2rem;margin-bottom:0.8rem">📢</div>
+        <h3 style="font-family:'Cinzel Decorative',serif;font-size:0.85rem;color:var(--gold2);margin-bottom:0.8rem;letter-spacing:0.03em">Ce qui est public</h3>
+        <p style="font-size:0.88rem;color:var(--text2);line-height:1.6">Déclaration de guerre confirmée, paix acceptée, reset de partie. Avec ping des concernés.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Races -->
+<section id="races">
+  <div class="section-header fade-in">
+    <div class="section-tag">113 races</div>
+    <h2>Races Jouables</h2>
+    <p>Choisis ta race avec <code>/race</code> — tape en français ou en anglais</p>
+  </div>
+
+  <div class="fade-in">
+    <div class="races-tabs">
+      <button class="races-tab active" onclick="switchTab('all', this)">Toutes (113)</button>
+      <button class="races-tab" onclick="switchTab('classiques', this)">🗡️ Classiques</button>
+      <button class="races-tab" onclick="switchTab('animaux', this)">🐾 Animaux</button>
+      <button class="races-tab" onclick="switchTab('mobs', this)">👹 Mobs Spéciaux</button>
+    </div>
+
+    <input type="text" class="race-search" id="raceSearch" placeholder="🔍 Rechercher une race..." oninput="filterRaces()">
+
+    <div id="racesContainer" class="races-grid"></div>
+  </div>
+</section>
+
+
+<!-- Footer -->
+<footer>
+  <p>WorldBox Multiplayer — Mod Discord par <span>Zedo</span></p>
+  <p style="margin-top:0.5rem;font-size:0.75rem;">113 races · 8 commandes · Interactions secrètes · Temps réel</p>
+</footer>
+
+<script>
+// ── Données des races ──────────────────────────────────────────────
+const RACES = [{"label":"🧑 Humain","id":"human","cat":"Races Classiques"},{"label":"🧝 Elfe","id":"elf","cat":"Races Classiques"},{"label":"👹 Orque","id":"orc","cat":"Races Classiques"},{"label":"⛏️ Nain","id":"dwarf","cat":"Races Classiques"},{"label":"🐱 Chat","id":"civ_cat","cat":"Animaux Civilisés"},{"label":"🐺 Loup","id":"civ_wolf","cat":"Animaux Civilisés"},{"label":"🐶 Chien","id":"civ_dog","cat":"Animaux Civilisés"},{"label":"🦊 Renard","id":"civ_fox","cat":"Animaux Civilisés"},{"label":"🐻 Ours","id":"civ_bear","cat":"Animaux Civilisés"},{"label":"🐰 Lapin","id":"civ_rabbit","cat":"Animaux Civilisés"},{"label":"🐭 Rat","id":"civ_rat","cat":"Animaux Civilisés"},{"label":"🐔 Poulet","id":"civ_chicken","cat":"Animaux Civilisés"},{"label":"🐑 Mouton","id":"civ_sheep","cat":"Animaux Civilisés"},{"label":"🐄 Vache","id":"civ_cow","cat":"Animaux Civilisés"},{"label":"🐒 Singe","id":"civ_monkey","cat":"Animaux Civilisés"},{"label":"🦬 Buffle","id":"civ_buffalo","cat":"Animaux Civilisés"},{"label":"🦏 Rhinocéros","id":"civ_rhino","cat":"Animaux Civilisés"},{"label":"🦁 Lion","id":"civ_lion","cat":"Animaux Civilisés"},{"label":"🐯 Tigre","id":"civ_tiger","cat":"Animaux Civilisés"},{"label":"🐆 Léopard","id":"civ_leopard","cat":"Animaux Civilisés"},{"label":"🐘 Éléphant","id":"civ_elephant","cat":"Animaux Civilisés"},{"label":"🦒 Girafe","id":"civ_giraffe","cat":"Animaux Civilisés"},{"label":"🦓 Zèbre","id":"civ_zebra","cat":"Animaux Civilisés"},{"label":"🦛 Hippopotame","id":"civ_hippo","cat":"Animaux Civilisés"},{"label":"🦍 Gorille","id":"civ_gorilla","cat":"Animaux Civilisés"},{"label":"🦔 Tatou","id":"civ_armadillo","cat":"Animaux Civilisés"},{"label":"🐧 Pingouin","id":"civ_penguin","cat":"Animaux Civilisés"},{"label":"🐢 Tortue","id":"civ_turtle","cat":"Animaux Civilisés"},{"label":"🦀 Crabe","id":"civ_crab","cat":"Animaux Civilisés"},{"label":"🦂 Scorpion","id":"civ_scorpion","cat":"Animaux Civilisés"},{"label":"🐸 Grenouille","id":"civ_frog","cat":"Animaux Civilisés"},{"label":"🐍 Serpent","id":"civ_snake","cat":"Animaux Civilisés"},{"label":"🐊 Crocodile","id":"civ_crocodile","cat":"Animaux Civilisés"},{"label":"🐟 Piranha","id":"civ_piranha","cat":"Animaux Civilisés"},{"label":"🐞 Scarabée","id":"civ_beetle","cat":"Animaux Civilisés"},{"label":"🌸 Fleur","id":"civ_liliar","cat":"Animaux Civilisés"},{"label":"🧄 Homme Ail","id":"civ_garlic_man","cat":"Animaux Civilisés"},{"label":"🍋 Homme Citron","id":"civ_lemon_man","cat":"Animaux Civilisés"},{"label":"💎 Golem Cristal","id":"civ_crystal_golem","cat":"Animaux Civilisés"},{"label":"🍬 Homme Bonbon","id":"civ_candy_man","cat":"Animaux Civilisés"},{"label":"🐼 Panda","id":"civ_panda","cat":"Animaux Civilisés"},{"label":"🐨 Koala","id":"civ_koala","cat":"Animaux Civilisés"},{"label":"🦘 Kangourou","id":"civ_kangaroo","cat":"Animaux Civilisés"},{"label":"🦇 Chauve-souris","id":"civ_bat","cat":"Animaux Civilisés"},{"label":"🦉 Hibou","id":"civ_owl","cat":"Animaux Civilisés"},{"label":"🦜 Perroquet","id":"civ_parrot","cat":"Animaux Civilisés"},{"label":"🦆 Canard","id":"civ_duck","cat":"Animaux Civilisés"},{"label":"🦩 Flamant Rose","id":"civ_flamingo","cat":"Animaux Civilisés"},{"label":"🦚 Paon","id":"civ_peacock","cat":"Animaux Civilisés"},{"label":"🐦 Corbeau","id":"civ_crow","cat":"Animaux Civilisés"},{"label":"🦎 Lézard","id":"civ_lizard","cat":"Animaux Civilisés"},{"label":"🦎 Caméléon","id":"civ_chameleon","cat":"Animaux Civilisés"},{"label":"🐊 Iguane","id":"civ_iguana","cat":"Animaux Civilisés"},{"label":"🌳 Homme Arbre","id":"civ_tree_man","cat":"Animaux Civilisés"},{"label":"👻 Fantôme","id":"civ_ghost","cat":"Animaux Civilisés"},{"label":"💀 Squelette","id":"civ_skeleton","cat":"Animaux Civilisés"},{"label":"🧟 Zombie","id":"civ_zombie","cat":"Animaux Civilisés"},{"label":"🧛 Vampire","id":"civ_vampire","cat":"Animaux Civilisés"},{"label":"🫧 Slime","id":"civ_slime","cat":"Animaux Civilisés"},{"label":"🎃 Citrouille","id":"civ_pumpkin","cat":"Animaux Civilisés"},{"label":"😈 Démon","id":"demon","cat":"Mobs Spéciaux"},{"label":"🧚 Fée","id":"fairy","cat":"Mobs Spéciaux"},{"label":"💀 Nécromancien","id":"necromancer","cat":"Mobs Spéciaux"},{"label":"🌿 Druide","id":"druid","cat":"Mobs Spéciaux"},{"label":"✨ Mage Blanc","id":"white_mage","cat":"Mobs Spéciaux"},{"label":"🌑 Mage Noir","id":"evil_mage","cat":"Mobs Spéciaux"},{"label":"❄️ Être Froid","id":"cold_one","cat":"Mobs Spéciaux"},{"label":"☃️ Bonhomme Neige","id":"snowman","cat":"Mobs Spéciaux"},{"label":"🗡️ Bandit","id":"bandit","cat":"Mobs Spéciaux"},{"label":"👽 Alien","id":"alien","cat":"Mobs Spéciaux"},{"label":"😇 Ange","id":"angel","cat":"Mobs Spéciaux"},{"label":"🐺 Loup-Garou","id":"werewolf","cat":"Mobs Spéciaux"},{"label":"🐉 Dragon","id":"dragon","cat":"Mobs Spéciaux"},{"label":"🧜 Sirène","id":"merfolk","cat":"Mobs Spéciaux"},{"label":"🐴 Centaure","id":"centaur","cat":"Mobs Spéciaux"},{"label":"🐂 Minotaure","id":"minotaur","cat":"Mobs Spéciaux"},{"label":"🧙 Gnome","id":"gnome","cat":"Mobs Spéciaux"},{"label":"👺 Gobelin","id":"goblin","cat":"Mobs Spéciaux"},{"label":"🧌 Troll","id":"troll","cat":"Mobs Spéciaux"},{"label":"🦈 Requin","id":"civ_shark","cat":"Animaux Civilisés"},{"label":"🐋 Baleine","id":"civ_whale","cat":"Animaux Civilisés"},{"label":"🦭 Phoque","id":"civ_seal","cat":"Animaux Civilisés"},{"label":"🦦 Loutre","id":"civ_otter","cat":"Animaux Civilisés"},{"label":"🐟 Poisson","id":"civ_fish","cat":"Animaux Civilisés"},{"label":"🦐 Crevette","id":"civ_shrimp","cat":"Animaux Civilisés"},{"label":"🪼 Méduse","id":"civ_jellyfish","cat":"Animaux Civilisés"},{"label":"🐙 Pieuvre","id":"civ_octopus","cat":"Animaux Civilisés"},{"label":"🐝 Abeille","id":"civ_bee","cat":"Animaux Civilisés"},{"label":"🐜 Fourmi","id":"civ_ant","cat":"Animaux Civilisés"},{"label":"🦫 Castor","id":"civ_beaver","cat":"Animaux Civilisés"},{"label":"🦌 Cerf","id":"civ_deer","cat":"Animaux Civilisés"},{"label":"🫎 Élan","id":"civ_moose","cat":"Animaux Civilisés"},{"label":"🐗 Sanglier","id":"civ_boar","cat":"Animaux Civilisés"},{"label":"🐐 Chèvre","id":"civ_goat","cat":"Animaux Civilisés"},{"label":"🦙 Alpaga","id":"civ_alpaca","cat":"Animaux Civilisés"},{"label":"🐹 Capybara","id":"civ_capybara","cat":"Animaux Civilisés"},{"label":"🐆 Guépard","id":"civ_cheetah","cat":"Animaux Civilisés"},{"label":"🦎 Gecko","id":"civ_gecko","cat":"Animaux Civilisés"},{"label":"🌸 Fleur","id":"civ_flower","cat":"Animaux Civilisés"},{"label":"🍄 Champignon","id":"civ_mushroom","cat":"Animaux Civilisés"},{"label":"🌵 Cactus","id":"civ_cactus","cat":"Animaux Civilisés"},{"label":"🪨 Golem Pierre","id":"civ_rock_golem","cat":"Animaux Civilisés"},{"label":"🏖️ Golem Sable","id":"civ_sand_golem","cat":"Animaux Civilisés"},{"label":"🧊 Golem Glace","id":"civ_ice_golem","cat":"Animaux Civilisés"},{"label":"🔥 Golem Feu","id":"civ_fire_golem","cat":"Animaux Civilisés"},{"label":"🫧 Blob Acide","id":"civ_acid_gentleman","cat":"Animaux Civilisés"},{"label":"🟢 Blob","id":"civ_blob","cat":"Animaux Civilisés"},{"label":"🌽 Homme Maïs","id":"civ_corn_man","cat":"Animaux Civilisés"},{"label":"🍅 Homme Tomate","id":"civ_tomato_man","cat":"Animaux Civilisés"},{"label":"🐍 Naga","id":"naga","cat":"Mobs Spéciaux"},{"label":"🧛 Seigneur Vampire","id":"vampire_lord","cat":"Mobs Spéciaux"},{"label":"💎 Golem","id":"golem","cat":"Mobs Spéciaux"},{"label":"🦝 Hyène","id":"civ_hyena","cat":"Animaux Civilisés"}];
+
+let currentTab = 'all';
+let searchQuery = '';
+
+function getEmoji(label) {
+  return label.split(' ')[0];
+}
+
+function getName(label) {
+  return label.split(' ').slice(1).join(' ');
+}
+
+function renderRaces() {
+  const container = document.getElementById('racesContainer');
+  const filtered = RACES.filter(r => {
+    const matchTab = currentTab === 'all' ||
+      (currentTab === 'classiques' && r.cat === 'Races Classiques') ||
+      (currentTab === 'animaux' && r.cat === 'Animaux Civilisés') ||
+      (currentTab === 'mobs' && r.cat === 'Mobs Spéciaux');
+    const matchSearch = searchQuery === '' ||
+      r.label.toLowerCase().includes(searchQuery) ||
+      r.id.toLowerCase().includes(searchQuery);
+    return matchTab && matchSearch;
+  });
+
+  container.innerHTML = filtered.map(r => `
+    <div class="race-card">
+      <span class="race-emoji">${getEmoji(r.label)}</span>
+      <span class="race-name">${getName(r.label)}</span>
+      <span class="race-id">${r.id}</span>
+    </div>
+  `).join('');
+}
+
+function switchTab(tab, btn) {
+  currentTab = tab;
+  document.querySelectorAll('.races-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderRaces();
+}
+
+function filterRaces() {
+  searchQuery = document.getElementById('raceSearch').value.toLowerCase();
+  renderRaces();
+}
+
+renderRaces();
+
+// ── Fade in au scroll ─────────────────────────────────────────────
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
