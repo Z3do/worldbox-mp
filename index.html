@@ -402,6 +402,7 @@
 
   .tag-ephemeral { background: rgba(39,174,96,0.15); color: #27ae60; border: 1px solid rgba(39,174,96,0.3); }
   .tag-public    { background: rgba(201,168,76,0.15); color: var(--gold); border: 1px solid rgba(201,168,76,0.3); }
+  .tag-priver    { background: rgba(209, 52, 24, 0.15); color: #D13418; border: 1px solid rgba(209, 52, 24, 0.3); }
   .tag-secret    { background: rgba(142,68,173,0.15); color: #8e44ad; border: 1px solid rgba(142,68,173,0.3); }
 
   /* ── Races ── */
@@ -635,7 +636,7 @@
 
 <!-- Navigation -->
 <nav>
-  <a class="nav-logo" href="#">⚔ WorldBox MP</a>
+  <a class="nav-logo" href="#">WorldBox MP</a>
   <ul class="nav-links">
     <li><a href="#commandes">Commandes</a></li>
     <li><a href="#races">Races</a></li>
@@ -648,7 +649,7 @@
   <div class="hero-orb hero-orb-1"></div>
   <div class="hero-orb hero-orb-2"></div>
 
-  <div class="hero-badge">🌍 Mod Discord Multijoueur</div>
+  <!--<div class="hero-badge">🌍 Mod Discord Multijoueur</div> -->
 
   <h1>
     WorldBox
@@ -699,11 +700,11 @@
       </div>
       <p class="cmd-desc">Choisir ta race de jeu. Tous les royaumes de cette race deviennent les tiens. Impossible de rechanger pendant la partie.</p>
       <ul class="cmd-steps">
-        <li><span class="step-num">1</span>Tape <code>/race</code> et choisis dans la liste avec autocomplete</li>
-        <li><span class="step-num">2</span>Tous les royaumes de cette race te sont attribués en jeu</li>
-        <li><span class="step-num">3</span>Bloqué jusqu'au prochain <code>/reset</code></li>
+        <li><span class="step-num">1</span><span>Choisis ta <b style="color:var(--gold2)">race</b> pour ton royaume dans la liste</span></li>
+        <li><span class="step-num">2</span>Tous les royaumes de cette race vous sont attribués en jeu</li>
+        <li><span class="step-num">3</span><span>Vous ne pouvez pas changer de race jusqu'à la prochaine partie <b style="color:var(--gold2)">/reset</b></span></li>
       </ul>
-      <span class="cmd-tag tag-ephemeral">Éphémère</span>
+      <span class="cmd-tag tag-public">Annonce publique</span>
     </div>
 
     <!-- /guerre -->
@@ -714,14 +715,14 @@
           <div class="cmd-name">/guerre <span>declarer | forcer</span></div>
         </div>
       </div>
-      <p class="cmd-desc">Déclarer la guerre à un joueur. Avec <code>declarer</code>, la cible a 25s pour ouvrir l'interaction puis 30s pour négocier. Avec <code>forcer</code>, la guerre est immédiate.</p>
+      <p class="cmd-desc">Déclare la guerre à un autre joueur. Avec <code>declarer</code>, l'adversaire reçoit une notification discrète et peut tenter de négocier avant que la guerre commence. Avec <code>forcer</code>, c'est la guerre directement, sans discussion possible.</p>
       <ul class="cmd-steps">
-        <li><span class="step-num">1</span>Annonce publique dans #game + bouton discret pour la cible</li>
-        <li><span class="step-num">2</span>La cible ouvre l'interaction → éphémère avec options de négo</li>
-        <li><span class="step-num">3</span>Offrir or, contre-offre, diplomatie ou accepter la guerre</li>
-        <li><span class="step-num">4</span>Résultat annoncé publiquement avec ping des deux joueurs</li>
+        <li><span class="step-num">1</span><span>Un message apparaît dans le chat pour prévenir l'adversaire, <b style="color:var(--gold2)">sans révéler</b> que c'est une déclaration de guerre</span></li>
+        <li><span class="step-num">2</span><span>L'adversaire clique sur le bouton → il découvre <b style="color:var(--gold2)">en privé</b> que c'est une guerre et peut négocier</span></li>
+        <li><span class="step-num">3</span><span>Il peut offrir de l'or, négocier pour la paix ou accepter la guerre</span></li>
+        <li><span class="step-num">4</span><span>Seulement si la guerre est confirmée, <b style="color:var(--gold2)">tout le monde est prévenu</b> dans le chat</span></li>
       </ul>
-      <span class="cmd-tag tag-secret">Secret</span>
+      <span class="cmd-tag tag-secret">🔒 Visible que par toi</span>
       <span class="cmd-tag tag-public">Annonce publique</span>
     </div>
 
@@ -733,15 +734,16 @@
           <div class="cmd-name">/paix <span>[joueur]</span></div>
         </div>
       </div>
-      <p class="cmd-desc">Proposer la paix à un joueur avec qui tu es en guerre. Trois types : paix simple, contre de l'or, ou accord diplomatique.</p>
+      <p class="cmd-desc">Propose la paix à un joueur avec qui tu es en guerre. Tu peux proposer une paix simple, offrir de l'or pour conclure l'accord, ou envoyer un message diplomatique. L'autre joueur peut accepter ou refuser.</p>
       <ul class="cmd-steps">
-        <li><span class="step-num">1</span>Choisis le type de proposition (éphémère)</li>
-        <li><span class="step-num">2</span>Bouton discret dans #game pour la cible (25s)</li>
-        <li><span class="step-num">3</span>La cible ouvre → Accepter ou Refuser en éphémère</li>
-        <li><span class="step-num">4</span>Si accepté → annonce publique avec ping des deux</li>
+        <li><span class="step-num">1</span><span>Choisis comment tu proposes la paix : simple, avec de l'or ou avec un message diplomatique</span></li>
+        <li><span class="step-num">2</span><span>L'adversaire reçoit une notification <b style="color:var(--gold2)">discrète</b> dans le chat personne d'autre ne sait que c'est une proposition de paix</span></li>
+        <li><span class="step-num">3</span><span>Il ouvre la notification et voit ta proposition <b style="color:var(--gold2)">en privé</b>, puis accepte ou refuse</span></li>
+        <li><span class="step-num">4</span><span>Si la paix est acceptée, <b style="color:var(--gold2)">tout le monde est prévenu</b> dans le chat</span></li>
       </ul>
-      <span class="cmd-tag tag-secret">Secret</span>
-      <span class="cmd-tag tag-ephemeral">Éphémère</span>
+      <span class="cmd-tag tag-secret">🔒 Visible que par toi</span>
+      <span class="cmd-tag tag-public">Annonce publique</span>
+      
     </div>
 
     <!-- /alliance -->
@@ -752,15 +754,15 @@
           <div class="cmd-name">/alliance <span>inviter | quitter | dissoudre | nom</span></div>
         </div>
       </div>
-      <p class="cmd-desc">Gérer les alliances. Un canal privé numéroté est créé à l'acceptation. Seul le chef peut dissoudre ou renommer.</p>
+      <p class="cmd-desc">Crée une alliance secrète avec un ou d'autres joueurs. Un chat privé uniquement visible par les membres est créé automatiquement. Seul le chef peut dissoudre ou renommer l'alliance.</p>
       <ul class="cmd-steps">
-        <li><span class="step-num">1</span><code>inviter</code> → bouton discret pour la cible (25s)</li>
-        <li><span class="step-num">2</span>Accepter → canal <code>alliance-001</code> créé automatiquement</li>
-        <li><span class="step-num">3</span><code>quitter</code> / <code>dissoudre</code> → confirmation + message dans le canal</li>
-        <li><span class="step-num">4</span>Si dernier membre seul → accès retiré automatiquement</li>
+        <li><span class="step-num">1</span><span>Avec <b style="color:var(--gold2)">/inviter</b>, le joueur reçoit une notification <b style="color:var(--gold2)">discrète</b> personne ne sait que tu lui proposes une alliance</span></li>
+        <li><span class="step-num">2</span><span>S'il accepte, un chat privé est créé automatiquement, <b style="color:var(--gold2)">visible uniquement par l'alliance</b></span></li>
+        <li><span class="step-num">3</span><span>Tu peux quitter ou dissoudre l'alliance à tout moment, les membres sont prévenus dans le chat privé</span></li>
+        <li><span class="step-num">4</span><span>Si tu es le dernier membre de l'alliance, elle se <b style="color:var(--gold2)">dissout automatiquement</b></span></li>
       </ul>
-      <span class="cmd-tag tag-secret">Canal privé</span>
-      <span class="cmd-tag tag-ephemeral">Éphémère</span>
+      <span class="cmd-tag tag-secret">🔒 Canal privé entre alliés</span>
+      
     </div>
 
     <!-- /or -->
@@ -771,14 +773,14 @@
           <div class="cmd-name">/or <span>[joueur] [montant]</span></div>
         </div>
       </div>
-      <p class="cmd-desc">Donner de l'or à un joueur. Vérifie ton or en temps réel via le mod C#. Impossible d'envoyer plus que tu n'en as.</p>
+      <p class="cmd-desc">Envoie de l'or à un autre joueur. Le bot vérifie en temps réel que tu as assez d'or avant de l'envoyer. Le destinataire reçoit une notification discrète, personne d'autre ne sait combien tu as envoyé.</p>
       <ul class="cmd-steps">
-        <li><span class="step-num">1</span>Le bot vérifie ton or actuel en jeu</li>
-        <li><span class="step-num">2</span>Si assez → or transféré + notification discrète 30s pour le receveur</li>
-        <li><span class="step-num">3</span>Le receveur ouvre → éphémère révèle le montant et l'envoyeur</li>
+        <li><span class="step-num">1</span><span>Le bot lit <b style="color:var(--gold2)">en temps réel</b> ton or dans WorldBox pour vérifier que tu en as assez</span></li>
+        <li><span class="step-num">2</span><span>L'or est transféré en jeu et le receveur reçoit une notification <b style="color:var(--gold2)">discrète</b> personne d'autre ne sait</span></li>
+        <li><span class="step-num">3</span><span>En ouvrant la notification, il découvre <b style="color:var(--gold2)">en privé</b> combien tu lui as envoyé et qui c'était</span></li>
       </ul>
-      <span class="cmd-tag tag-secret">Secret</span>
-      <span class="cmd-tag tag-ephemeral">Éphémère</span>
+      <span class="cmd-tag tag-secret">🔒 Visible que par toi</span>
+      
     </div>
 
     <!-- /orinfo -->
@@ -789,12 +791,12 @@
           <div class="cmd-name">/orinfo</div>
         </div>
       </div>
-      <p class="cmd-desc">Voir ton or actuel, ta race et ton nombre d'unités en temps réel. Données lues directement depuis WorldBox via le mod C#.</p>
+      <p class="cmd-desc">Consulte tes stats en direct : ton or actuel, ta race et le nombre d'unités sous ton commandement. Ces infos sont lues directement depuis WorldBox en temps réel, visible que par toi.</p>
       <ul class="cmd-steps">
-        <li><span class="step-num">1</span>Tape <code>/orinfo</code></li>
-        <li><span class="step-num">2</span>Reçois un éphémère avec tes stats en direct</li>
+        <li><span class="step-num">1</span><span>Tape <b style="color:var(--gold2)">/orinfo</b></span></li>
+        <li><span class="step-num">2</span><span>Tes stats apparaissent <b style="color:var(--gold2)">uniquement pour toi</b>, personne d'autre ne les voit</span></li>
       </ul>
-      <span class="cmd-tag tag-ephemeral">Éphémère</span>
+      <span class="cmd-tag tag-secret">🔒 Visible que par toi</span>
     </div>
 
     <!-- /statut -->
@@ -805,12 +807,12 @@
           <div class="cmd-name">/statut</div>
         </div>
       </div>
-      <p class="cmd-desc">Affiche tous les joueurs enregistrés, leurs races, les guerres en cours, les alliances actives et les propositions en attente.</p>
+      <p class="cmd-desc">Affiche un résumé de la partie : qui joue quelle race, les guerres en cours et les alliances actives.</p>
       <ul class="cmd-steps">
-        <li><span class="step-num">1</span>Tape <code>/statut</code></li>
-        <li><span class="step-num">2</span>Vue globale de la partie en temps réel</li>
+        <li><span class="step-num">1</span><span>Tape <b style="color:var(--gold2)">/statut</b></span></li>
+        <li><span class="step-num">2</span><span>Un résumé de la partie s'affiche avec les informations <b style="color:var(--gold2)">de tout le monde</b></span></li>
       </ul>
-      <span class="cmd-tag tag-public">Public</span>
+      <span class="cmd-tag tag-priver">🔒 Visible que par Zedo</span>
     </div>
 
     <!-- /reset -->
@@ -821,13 +823,13 @@
           <div class="cmd-name">/reset</div>
         </div>
       </div>
-      <p class="cmd-desc">Réinitialise la partie. Supprime les canaux d'alliance, efface toutes les données et affiche les statistiques de la partie.</p>
+      <p class="cmd-desc">Remet les compteurs à zéro pour lancer une nouvelle partie. Les chats d'alliance sont supprimés, toutes les données effacées, et un résumé des stats de la partie est affiché avant de recommencer.</p>
       <ul class="cmd-steps">
-        <li><span class="step-num">1</span>Tous les canaux alliance sont supprimés</li>
-        <li><span class="step-num">2</span>Stats affichées : alliances, guerres, or échangé, diplomaties…</li>
-        <li><span class="step-num">3</span>Canal vidé → message "Nouvelle partie lancée !"</li>
+        <li><span class="step-num">1</span><span>Tous les chats privés d'alliance sont <b style="color:var(--gold2)">supprimés</b></span></li>
+        <li><span class="step-num">2</span><span>Les stats de la partie sont affichées : <b style="color:var(--gold2)">nombre de guerres, alliances, or échangé…</b></span></li>
+        <li><span class="step-num">3</span><span>Le chat est nettoyé et un message annonce le début de la nouvelle partie</span></li>
       </ul>
-      <span class="cmd-tag tag-public">Public</span>
+      <span class="cmd-tag tag-public">Annonce publique</span>
     </div>
 
   </div>
@@ -840,13 +842,12 @@
   <div class="section-header fade-in">
     <div class="section-tag">Confidentialité</div>
     <h2>Système Secret</h2>
-    <p>Comment les interactions restent invisibles pour les autres joueurs</p>
+    <p>Comment le système garde tes actions secrètes</p>
   </div>
 
   <div class="fade-in">
     <p style="text-align:center; color:var(--text2); font-style:italic; margin-bottom:2rem;">
-      Personne ne sait si tu déclares une guerre, proposes une alliance ou envoies de l'or.<br>
-      Seul le résultat final est annoncé publiquement.
+      Quand tu fais une action (guerre, alliance, or…), les autres joueurs voient juste une notification neutre sans savoir ce que c'est.<br>Seulement toi et la personne concernée voyez le contenu. <b style="color:var(--gold2)">Le résultat final est annoncé à tout le monde uniquement s'il est important</b> (guerre déclarée, paix conclue).
     </p>
 
     <div class="secret-flow">
@@ -865,7 +866,7 @@
       <div class="flow-box">
         <span class="flow-box-icon">🔒</span>
         <div class="flow-box-label">Joueur B ouvre</div>
-        <div class="flow-box-sub">éphémère privé avec options</div>
+        <div class="flow-box-sub">voit le contenu en privé</div>
       </div>
       <div class="flow-arrow">→</div>
       <div class="flow-box">
@@ -879,17 +880,17 @@
       <div style="background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.8rem;text-align:center;">
         <div style="font-size:2rem;margin-bottom:0.8rem">👁️‍🗨️</div>
         <h3 style="font-family:'Cinzel Decorative',serif;font-size:0.85rem;color:var(--gold2);margin-bottom:0.8rem;letter-spacing:0.03em">Ce que les autres voient</h3>
-        <p style="font-size:0.88rem;color:var(--text2);line-height:1.6">"@Zedo — tu as une interaction en attente" + bouton Ouvrir. Rien d'autre.</p>
+        <p style="font-size:0.88rem;color:var(--text2);line-height:1.6">Un simple message neutre avec un bouton "Ouvrir". Impossible de savoir si c'est une guerre, une alliance ou de l'or.</p>
       </div>
       <div style="background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.8rem;text-align:center;">
         <div style="font-size:2rem;margin-bottom:0.8rem">🔐</div>
         <h3 style="font-family:'Cinzel Decorative',serif;font-size:0.85rem;color:var(--gold2);margin-bottom:0.8rem;letter-spacing:0.03em">Ce que tu vois seul</h3>
-        <p style="font-size:0.88rem;color:var(--text2);line-height:1.6">Le type d'interaction, le joueur concerné, le montant d'or, la proposition diplomatique.</p>
+        <p style="font-size:0.88rem;color:var(--text2);line-height:1.6">En cliquant sur Ouvrir, tu découvres en privé le contenu complet : qui t'écrit, pourquoi, et avec quelle proposition.</p>
       </div>
       <div style="background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.8rem;text-align:center;">
         <div style="font-size:2rem;margin-bottom:0.8rem">📢</div>
         <h3 style="font-family:'Cinzel Decorative',serif;font-size:0.85rem;color:var(--gold2);margin-bottom:0.8rem;letter-spacing:0.03em">Ce qui est public</h3>
-        <p style="font-size:0.88rem;color:var(--text2);line-height:1.6">Déclaration de guerre confirmée, paix acceptée, reset de partie. Avec ping des concernés.</p>
+        <p style="font-size:0.88rem;color:var(--text2);line-height:1.6">Seulement quand la guerre est confirmée ou la paix conclue, tout le monde est averti. Les détails des négociations restent secrets.</p>
       </div>
     </div>
   </div>
@@ -902,7 +903,7 @@
   <div class="section-header fade-in">
     <div class="section-tag">113 races</div>
     <h2>Races Jouables</h2>
-    <p>Choisis ta race avec <code>/race</code> — tape en français ou en anglais</p>
+    <p>Choisis ta race avec  —  <code>/race</code> </p>
   </div>
 
   <div class="fade-in">
@@ -923,7 +924,7 @@
 <!-- Footer -->
 <footer>
   <p>WorldBox Multiplayer — Mod Discord par <span>Zedo</span></p>
-  <p style="margin-top:0.5rem;font-size:0.75rem;">113 races · 8 commandes · Interactions secrètes · Temps réel</p>
+  <!--<p style="margin-top:0.5rem;font-size:0.75rem;">113 races · 8 commandes · Interactions secrètes · Temps réel</p>-->
 </footer>
 
 <script>
